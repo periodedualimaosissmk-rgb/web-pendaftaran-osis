@@ -3,615 +3,857 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formulir Pendaftaran Calon Pengurus OSIS</title>
+<title>Pendaftaran Calon Pengurus OSIS</title>
+<meta name="description" content="Formulir pendaftaran calon pengurus OSIS. Isi data diri, pilih jabatan, sampaikan visi & misi, dan unggah berkas untuk mendaftar sebagai calon pengurus.">
+<link rel="icon" href="../aset/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy: #0A2647;
-    --navy-deep: #061527;
-    --gold: #C9A227;
-    --gold-light: #E9CE79;
-    --cream: #FBF7EE;
-    --paper: #FFFDF8;
-    --ink: #1C1C1C;
-    --muted: #6b6558;
-    --red: #9C2B3A;
-    --line: #E4DCC8;
-    --radius: 14px;
+    --navy:#101d33;
+    --navy-2:#1c3057;
+    --navy-3:#28406e;
+    --gold:#c89b3c;
+    --gold-light:#e4c876;
+    --cream:#f7f3e9;
+    --paper:#fffdf8;
+    --maroon:#7c2432;
+    --ink:#181614;
+    --slate:#5b6472;
+    --line:#e4dcc8;
+    --ok:#2f6b4f;
+    --err:#a3323d;
+    --radius:14px;
+    --shadow: 0 20px 50px -20px rgba(16,29,51,0.35);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
   body{
+    margin:0;
     font-family:'Inter',sans-serif;
+    background:var(--cream);
     color:var(--ink);
-    background:
-      linear-gradient(180deg, rgba(6,21,39,.88) 0%, rgba(10,38,71,.82) 40%, rgba(10,38,71,.9) 100%),
-      url('aset/background.jpg') center/cover fixed no-repeat;
-    min-height:100vh;
-    padding:0 0 60px;
+    -webkit-font-smoothing:antialiased;
   }
+  ::selection{background:var(--gold-light); color:var(--navy);}
+
   a{color:inherit;}
 
-  /* progress bar */
-  #progressWrap{
-    position:sticky; top:0; z-index:50;
-    height:4px; background:rgba(255,255,255,.15);
+  /* ===== Layout shell ===== */
+  .shell{
+    display:grid;
+    grid-template-columns:min(420px, 38vw) 1fr;
+    min-height:100vh;
   }
-  #progressBar{
-    height:100%; width:0%;
-    background:linear-gradient(90deg,var(--gold),var(--gold-light));
-    transition:width .35s ease;
+  @media (max-width:940px){
+    .shell{grid-template-columns:1fr;}
   }
 
-  /* header */
-  header.hero{
-    text-align:center;
-    padding:52px 20px 40px;
+  /* ===== LEFT — identity / id-card panel ===== */
+  .panel{
+    position:sticky;
+    top:0;
+    height:100vh;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(200,155,60,0.18), transparent 45%),
+      radial-gradient(circle at 90% 90%, rgba(124,36,50,0.28), transparent 50%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 65%, var(--navy-3) 100%);
     color:var(--cream);
+    padding:44px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow-y:auto;
   }
-  .logo-ring{
-    width:92px;height:92px;border-radius:50%;
-    margin:0 auto 18px;
-    background:var(--paper);
-    border:3px solid var(--gold);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 8px 24px rgba(0,0,0,.35);
-    overflow:hidden;
+  @media (max-width:940px){
+    .panel{position:relative; height:auto; padding:32px 24px 40px;}
   }
-  .logo-ring img{width:100%;height:100%;object-fit:contain;padding:8px;}
-  .eyebrow{
-    font-family:'Space Mono',monospace;
-    letter-spacing:.35em;
+  .panel::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 46px);
+    pointer-events:none;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    position:relative;
+    z-index:1;
+  }
+  .brand img{
+    width:52px; height:52px; object-fit:contain;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+  }
+  .brand-text .eyebrow{
+    font-family:'JetBrains Mono', monospace;
     font-size:11px;
+    letter-spacing:.18em;
+    color:var(--gold-light);
+    text-transform:uppercase;
+  }
+  .brand-text .name{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:17px;
+    line-height:1.2;
+  }
+
+  .hero-copy{
+    margin-top:34px;
+    position:relative; z-index:1;
+  }
+  .hero-copy .tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
     text-transform:uppercase;
     color:var(--gold-light);
-    margin-bottom:10px;
+    border:1px solid rgba(228,200,118,0.35);
+    padding:5px 10px;
+    border-radius:999px;
+    margin-bottom:16px;
   }
-  header.hero h1{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:clamp(28px,5vw,44px);
-    margin:0 0 10px;
-    letter-spacing:-.01em;
+  .hero-copy h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-style:italic;
+    font-size:clamp(28px, 3.6vw, 38px);
+    line-height:1.12;
+    margin:0 0 14px;
   }
-  header.hero p{
-    max-width:520px;margin:0 auto;
-    color:#D7DEE9; font-size:15px; line-height:1.6;
-  }
-
-  /* container */
-  .wrap{max-width:820px;margin:0 auto;padding:0 18px;}
-
-  .card{
-    background:var(--paper);
-    border-radius:var(--radius);
-    border:1px solid var(--line);
-    box-shadow:0 20px 50px rgba(0,0,0,.28);
-    overflow:hidden;
-  }
-
-  form{padding:8px 0 0;}
-
-  section.step{
-    padding:34px 34px 30px;
-    border-bottom:1px solid var(--line);
-  }
-  section.step:last-of-type{border-bottom:none;}
-
-  .step-head{
-    display:flex; align-items:baseline; gap:14px;
-    margin-bottom:22px;
-  }
-  .step-num{
-    font-family:'Space Mono',monospace;
-    font-size:13px; color:var(--gold);
-    border:1px solid var(--gold);
-    border-radius:20px;
-    padding:3px 10px;
-    flex-shrink:0;
-  }
-  .step-head h2{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:21px;
-    margin:0;
-    color:var(--navy);
-  }
-  .step-sub{
-    font-size:13px; color:var(--muted); margin:4px 0 22px 46px;
-  }
-
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
-  .field{margin-bottom:18px;}
-  .field.full{grid-column:1/-1;}
-  .field:last-child{margin-bottom:0;}
-
-  label{
-    display:block;
-    font-size:13px; font-weight:600;
-    color:var(--navy);
-    margin-bottom:7px;
-  }
-  label .req{color:var(--red); margin-left:2px;}
-  label .opt{
-    font-weight:400; color:var(--muted); font-size:11px;
-    text-transform:uppercase; letter-spacing:.05em;
-  }
-
-  input[type="text"], input[type="date"], input[type="tel"],
-  input[type="email"], select, textarea{
-    width:100%;
-    font-family:'Inter',sans-serif;
+  .hero-copy p{
     font-size:14.5px;
-    padding:11px 13px;
-    border:1.5px solid var(--line);
-    border-radius:9px;
-    background:var(--cream);
+    line-height:1.65;
+    color:#cdd6e6;
+    margin:0;
+    max-width:38ch;
+  }
+
+  /* live ID card */
+  .idcard-wrap{
+    margin-top:34px;
+    position:relative;
+    z-index:1;
+  }
+  .idcard{
+    background:linear-gradient(155deg, #fffdf8, #f1e9d4 85%);
     color:var(--ink);
-    transition:border-color .2s, background .2s;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:var(--shadow), 0 0 0 1px rgba(255,255,255,0.06);
+    transform:rotate(-2deg);
+    transition:transform .4s ease;
   }
-  input:focus, select:focus, textarea:focus{
-    outline:none;
-    border-color:var(--gold);
-    background:var(--paper);
+  .idcard-wrap:hover .idcard{transform:rotate(0deg) translateY(-4px);}
+  .idcard-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    border-bottom:1.5px dashed var(--line);
+    padding-bottom:10px; margin-bottom:12px;
   }
-  input:invalid:not(:placeholder-shown){border-color:#d99;}
-  textarea{resize:vertical; min-height:90px; line-height:1.55;}
-  select{appearance:none; cursor:pointer;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%230A2647' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 14px center;
-    padding-right:38px;
+  .idcard-top .k-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--maroon);
+    font-weight:700;
   }
-  optgroup{font-family:'Space Mono',monospace; font-style:normal; font-size:12px; color:var(--navy);}
-
-  .ttl-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-  @media(max-width:560px){.ttl-row{grid-template-columns:1fr;} .grid{grid-template-columns:1fr;}}
-
-  /* upload boxes */
-  .upload-box{
-    border:2px dashed var(--line);
-    border-radius:12px;
-    background:var(--cream);
-    padding:22px;
-    display:flex; gap:18px; align-items:center;
-    transition:border-color .2s, background .2s;
+  .idcard-top .k-org{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--navy);
   }
-  .upload-box.has-file{border-color:var(--gold); background:#FBF3DE;}
-  .upload-thumb{
-    width:78px; height:78px; border-radius:8px;
-    background:var(--paper); border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center;
-    overflow:hidden; flex-shrink:0;
-  }
-  .upload-thumb img{width:100%;height:100%;object-fit:cover;}
-  .upload-thumb svg{opacity:.35;}
-  .upload-info{flex:1; min-width:0;}
-  .upload-info .fname{font-size:13px; font-weight:600; color:var(--navy); word-break:break-all;}
-  .upload-info .fhint{font-size:12px; color:var(--muted); margin-top:2px;}
-  .upload-actions{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
-  .btn-file{
-    display:inline-flex; align-items:center; gap:7px;
-    background:var(--navy); color:var(--cream);
-    border:none; border-radius:8px;
-    padding:9px 15px; font-size:13px; font-weight:600;
-    cursor:pointer; font-family:'Inter',sans-serif;
-  }
-  .btn-file:hover{background:var(--navy-deep);}
-  .link-example{
-    font-size:12.5px; color:var(--red); font-weight:600;
-    text-decoration:underline; text-underline-offset:3px;
-    background:none; border:none; cursor:pointer; padding:0;
-    font-family:'Inter',sans-serif;
-  }
-  .note-box{
-    margin-top:12px; padding:11px 14px;
-    background:#FBF0E4; border-left:3px solid var(--gold);
-    border-radius:6px; font-size:12.5px; color:#5c4b1f; line-height:1.55;
-  }
-
-  /* submit */
-  .submit-zone{
-    padding:36px 34px 40px;
-    text-align:center;
-    background:var(--navy);
-    color:var(--cream);
-    position:relative;
+  .idcard-body{display:flex; gap:14px;}
+  .idcard-photo{
+    width:66px; height:84px;
+    border-radius:6px;
+    background:#e9e2ce;
+    border:1px solid var(--line);
     overflow:hidden;
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
   }
-  .seal{
-    width:74px;height:74px;margin:0 auto 16px;
-    border:2px solid var(--gold);
-    border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    transform:rotate(-8deg);
-    position:relative;
+  .idcard-photo img{width:100%; height:100%; object-fit:cover;}
+  .idcard-photo svg{width:26px; height:26px; opacity:.35;}
+  .idcard-info{min-width:0;}
+  .idcard-info .id-name{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:15px;
+    line-height:1.2;
+    color:var(--navy);
+    overflow-wrap:anywhere;
   }
-  .seal::before{
-    content:'';position:absolute; inset:6px;
-    border:1px dashed var(--gold-light); border-radius:50%;
+  .idcard-info .id-role{
+    display:inline-block;
+    margin-top:5px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:.05em;
+    background:var(--maroon);
+    color:#fff;
+    padding:2px 7px;
+    border-radius:5px;
   }
-  .seal span{
-    font-family:'Space Mono',monospace; font-size:10px;
-    letter-spacing:.1em; color:var(--gold-light); text-align:center;
-    line-height:1.3;
+  .idcard-info .id-meta{
+    margin-top:8px;
+    font-size:10.5px;
+    color:var(--slate);
+    line-height:1.6;
   }
-  .submit-zone p.small{color:#B9C4D6; font-size:12.5px; max-width:420px; margin:14px auto 0;}
-  button[type="submit"]{
-    font-family:'Fraunces',serif; font-weight:600; font-size:17px;
-    background:linear-gradient(180deg,var(--gold-light),var(--gold));
-    color:var(--navy-deep);
-    border:none; border-radius:10px;
-    padding:15px 42px;
-    cursor:pointer;
-    box-shadow:0 10px 25px rgba(201,162,39,.35);
-    transition:transform .15s ease;
-  }
-  button[type="submit"]:hover{transform:translateY(-2px);}
-  button[type="submit"]:active{transform:translateY(0);}
-
-  /* modal (lightbox for contoh) */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(6,21,39,.82);
-    display:none; align-items:center; justify-content:center;
-    z-index:200; padding:24px;
-  }
-  .modal-overlay.open{display:flex;}
-  .modal-box{
-    background:var(--paper); border-radius:12px; overflow:hidden;
-    max-width:380px; width:100%;
-  }
-  .modal-box img{width:100%; display:block;}
-  .modal-box .modal-cap{
-    padding:14px 16px; font-size:13px; color:var(--muted);
+  .idcard-info .id-meta span{color:var(--ink); font-weight:600;}
+  .idcard-foot{
+    margin-top:12px; padding-top:10px;
+    border-top:1.5px dashed var(--line);
     display:flex; justify-content:space-between; align-items:center;
   }
-  .modal-cap button{
-    background:none; border:none; font-size:13px; font-weight:700;
-    color:var(--red); cursor:pointer;
+  .idcard-foot .barcode{
+    display:flex; gap:1.5px; align-items:flex-end; height:16px;
+  }
+  .idcard-foot .barcode i{
+    display:block; width:2px; background:var(--navy); opacity:.55;
+  }
+  .idcard-foot .no{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9px; color:var(--slate);
+  }
+  .idcard-caption{
+    text-align:center;
+    margin-top:10px;
+    font-size:11px;
+    color:#9aa7be;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:.04em;
   }
 
-  /* success screen */
-  #successOverlay{
-    position:fixed; inset:0; z-index:300;
-    background:linear-gradient(180deg, rgba(6,21,39,.95), rgba(10,38,71,.97));
-    display:none; align-items:center; justify-content:center; padding:24px;
+  .panel-foot{
+    position:relative; z-index:1;
+    margin-top:32px;
+    font-size:11.5px;
+    color:#9aa7be;
+    line-height:1.7;
+    border-top:1px solid rgba(255,255,255,0.12);
+    padding-top:16px;
   }
-  #successOverlay.open{display:flex;}
-  .id-card{
-    background:var(--paper); border-radius:16px; width:100%; max-width:380px;
-    overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,.5);
-    animation:pop .35s ease;
+  .panel-foot b{color:var(--gold-light);}
+
+  /* ===== RIGHT — form ===== */
+  .content{
+    padding:52px 56px 90px;
+    max-width:760px;
   }
-  @keyframes pop{from{transform:scale(.92);opacity:0} to{transform:scale(1);opacity:1}}
-  .id-card-top{
-    background:var(--navy); color:var(--cream);
-    padding:18px 20px; display:flex; align-items:center; gap:10px;
+  @media (max-width:940px){ .content{padding:40px 22px 70px;} }
+
+  .content-head .step-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--maroon);
+    font-weight:600;
   }
-  .id-card-top .eyebrow{margin:0; font-size:10px;}
-  .id-card-body{padding:22px 22px 10px; display:flex; gap:16px;}
-  .id-photo{
-    width:70px; height:92px; border-radius:6px; border:1px solid var(--line);
-    background:var(--cream); overflow:hidden; flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
+  .content-head h2{
+    font-family:'Fraunces', serif;
+    font-size:clamp(26px,3vw,32px);
+    margin:8px 0 10px;
   }
-  .id-photo img{width:100%;height:100%;object-fit:cover;}
-  .id-name{font-family:'Fraunces',serif; font-weight:600; font-size:18px; color:var(--navy); margin:0 0 4px;}
-  .id-role{
-    display:inline-block; font-family:'Space Mono',monospace; font-size:10.5px;
-    background:var(--gold-light); color:var(--navy-deep); padding:3px 8px; border-radius:20px;
-    letter-spacing:.03em; margin-bottom:8px;
-  }
-  .id-meta{font-size:12px; color:var(--muted); line-height:1.6;}
-  .id-card-foot{
-    padding:16px 22px 22px; text-align:center;
-  }
-  .id-card-foot p{font-size:13px; color:var(--muted); line-height:1.6; margin:0 0 16px;}
-  .btn-close-success{
-    background:var(--navy); color:var(--cream); border:none;
-    border-radius:8px; padding:11px 24px; font-weight:600; font-size:13.5px;
-    cursor:pointer; font-family:'Inter',sans-serif;
+  .content-head p{
+    color:var(--slate);
+    line-height:1.6;
+    margin:0 0 8px;
+    max-width:56ch;
   }
 
-  footer.pagefoot{
-    text-align:center; color:#9BA8BC; font-size:12px; padding:26px 20px 0;
+  form{margin-top:36px;}
+
+  .section{
+    position:relative;
+    padding:30px 0 34px;
+    border-top:1px solid var(--line);
+  }
+  .section:first-child{border-top:none; padding-top:0;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .section-num{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:15px;
+    color:var(--maroon);
+    flex-shrink:0;
+  }
+  .section-head h3{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    margin:0;
+  }
+  .section-sub{
+    font-size:12.5px;
+    color:var(--slate);
+    margin:2px 0 0 0;
+  }
+
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px 22px;
+  }
+  @media (max-width:600px){ .grid2{grid-template-columns:1fr;} }
+
+  .field{margin-bottom:20px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:7px;
+    color:var(--navy);
+  }
+  .field label .opt{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    font-weight:500;
+    color:var(--slate);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  input[type=text], input[type=tel], input[type=email], input[type=date], select, textarea{
+    width:100%;
+    border:1.5px solid var(--line);
+    background:var(--paper);
+    border-radius:9px;
+    padding:12px 13px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  textarea{resize:vertical; min-height:88px; line-height:1.55;}
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--maroon);
+    box-shadow:0 0 0 3.5px rgba(124,36,50,0.12);
+  }
+  input:invalid:not(:placeholder-shown){ }
+  select{appearance:none; -webkit-appearance:none; background-repeat:no-repeat; background-position:right 13px center;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235b6472' stroke-width='1.6' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    padding-right:34px;
+  }
+
+  .helper{font-size:11.5px; color:var(--slate); margin-top:6px; line-height:1.5;}
+
+  /* upload blocks */
+  .upload-box{
+    border:1.5px dashed #cfc4a3;
+    border-radius:12px;
+    background:var(--paper);
+    padding:18px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+  @media (max-width:560px){ .upload-box{flex-direction:column; align-items:stretch;} }
+  .upload-preview{
+    width:78px; height:100px;
+    border-radius:8px;
+    background:#efe8d4;
+    border:1px solid var(--line);
+    flex-shrink:0;
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; color:var(--slate); text-align:center;
+  }
+  .upload-preview.ttd{width:130px; height:70px;}
+  .upload-preview img{width:100%; height:100%; object-fit:cover;}
+  .upload-actions{flex:1; min-width:0;}
+  .upload-actions .row-btns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .btn-mini{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'Inter',sans-serif;
+    font-size:12.5px; font-weight:600;
+    padding:8px 13px;
+    border-radius:8px;
+    border:1.5px solid var(--navy);
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+    transition:transform .15s, opacity .15s;
+  }
+  .btn-mini.ghost{background:transparent; color:var(--navy);}
+  .btn-mini:hover{transform:translateY(-1px);}
+  .btn-mini:active{transform:translateY(0);}
+  .example-link{
+    font-size:12px;
+    color:var(--maroon);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  .filename{
+    display:block;
+    margin-top:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--slate);
+    word-break:break-all;
+  }
+
+  fieldset{border:none; padding:0; margin:0;}
+
+  /* submit */
+  .submit-row{
+    margin-top:38px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .btn-submit{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16px;
+    padding:15px 30px;
+    background:var(--maroon);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    box-shadow:0 14px 30px -12px rgba(124,36,50,0.55);
+    transition:transform .18s ease, box-shadow .18s ease;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn-submit:hover{transform:translateY(-2px); box-shadow:0 18px 34px -12px rgba(124,36,50,0.6);}
+  .btn-submit:disabled{opacity:.6; cursor:progress; transform:none;}
+  .submit-note{font-size:12px; color:var(--slate); line-height:1.5; max-width:32ch;}
+
+  .status-box{
+    margin-top:22px;
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:13.5px;
+    display:none;
+    line-height:1.5;
+  }
+  .status-box.show{display:block;}
+  .status-box.ok{background:#e9f3ee; color:var(--ok); border:1px solid #bfe0cf;}
+  .status-box.err{background:#fbeaec; color:var(--err); border:1px solid #f2c3c9;}
+  .status-box.load{background:#eef1f6; color:var(--navy); border:1px solid #d7dee8;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
   }
 </style>
 </head>
 <body>
 
-<div id="progressWrap"><div id="progressBar"></div></div>
+<div class="shell">
 
-<header class="hero">
-  <div class="logo-ring"><img src="aset/logo.png" alt="Logo OSIS" onerror="this.parentElement.innerHTML='OSIS'"></div>
-  <div class="eyebrow">Organisasi Siswa Intra Sekolah</div>
-  <h1>Formulir Pendaftaran<br>Calon Pengurus OSIS</h1>
-  <p>Lengkapi data di bawah ini dengan benar dan jujur. Formulir ini akan menjadi dasar seleksi calon pengurus OSIS periode berjalan.</p>
-</header>
-
-<div class="wrap">
-<div class="card">
-<form id="osisForm" novalidate>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">01</span><h2>Data Diri</h2></div>
-    <p class="step-sub">Isi sesuai identitas resmi kamu.</p>
-
-    <div class="field full">
-      <label for="nama">Nama Lengkap <span class="req">*</span></label>
-      <input type="text" id="nama" name="nama" placeholder="Contoh: Ahmad Fauzi Ramadhan" required>
-    </div>
-
-    <div class="field full">
-      <label>Tempat, Tanggal Lahir (TTL) <span class="req">*</span></label>
-      <div class="ttl-row">
-        <input type="text" id="tempatLahir" name="tempatLahir" placeholder="Tempat lahir" required>
-        <input type="date" id="tanggalLahir" name="tanggalLahir" required>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="field">
-        <label for="kelas">Kelas <span class="req">*</span></label>
-        <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI TKR 1" required>
-      </div>
-      <div class="field">
-        <label for="agama">Agama <span class="req">*</span></label>
-        <select id="agama" name="agama" required>
-          <option value="" disabled selected>Pilih agama</option>
-          <option>Islam</option>
-          <option>Kristen Protestan</option>
-          <option>Katolik</option>
-          <option>Hindu</option>
-          <option>Buddha</option>
-          <option>Khonghucu</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="noHp">No. HP / WhatsApp <span class="req">*</span></label>
-        <input type="tel" id="noHp" name="noHp" placeholder="08xxxxxxxxxx" pattern="[0-9+ ]{9,15}" required>
-      </div>
-      <div class="field">
-        <label for="email">Email <span class="req">*</span></label>
-        <input type="email" id="email" name="email" placeholder="nama@email.com" required>
-      </div>
-    </div>
-  </section>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">02</span><h2>Jabatan yang Diinginkan</h2></div>
-    <p class="step-sub">Pilih satu posisi sesuai minat dan kemampuanmu.</p>
-    <div class="field full">
-      <label for="jabatan">Jabatan <span class="req">*</span></label>
-      <select id="jabatan" name="jabatan" required>
-        <option value="" disabled selected>Pilih jabatan</option>
-        <optgroup label="--- PENGURUS INTI ---">
-          <option value="KETUA OSIS">KETUA OSIS</option>
-          <option value="WAKIL KETUA OSIS">WAKIL KETUA OSIS</option>
-          <option value="SEKRETARIS 1">SEKRETARIS 1</option>
-          <option value="SEKRETARIS 2">SEKRETARIS 2</option>
-          <option value="BENDAHARA 1">BENDAHARA 1</option>
-          <option value="BENDAHARA 2">BENDAHARA 2</option>
-        </optgroup>
-        <optgroup label="--- SEKSI BIDANG (SEKBID) ---">
-          <option value="SEKBID 1: KEROHANIAN & KEDISIPLINAN">SEKBID 1: KEROHANIAN & KEDISIPLINAN</option>
-          <option value="SEKBID 2: SENI & KREATIVITAS">SEKBID 2: SENI & KREATIVITAS</option>
-          <option value="SEKBID 3: KEAMANAN & KEBERSIHAN">SEKBID 3: KEAMANAN & KEBERSIHAN</option>
-          <option value="SEKBID 4: INVENTARIS & PENGELOLAAN">SEKBID 4: INVENTARIS & PENGELOLAAN</option>
-          <option value="SEKBID 5: KOMUNIKASI & PUBLIKASI">SEKBID 5: KOMUNIKASI & PUBLIKASI</option>
-        </optgroup>
-      </select>
-    </div>
-  </section>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">03</span><h2>Pengalaman Organisasi</h2></div>
-    <p class="step-sub"><span class="opt">Opsional</span> — tulis pengalaman organisasi/kepanitiaan yang pernah kamu ikuti.</p>
-    <div class="field full">
-      <label for="pengalaman">Pengalaman Organisasi</label>
-      <textarea id="pengalaman" name="pengalaman" placeholder="Contoh: Ketua kelas X TKR 1 (2024), Panitia MPLS 2025, anggota Pramuka..."></textarea>
-    </div>
-  </section>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">04</span><h2>Visi &amp; Misi</h2></div>
-    <p class="step-sub">Sampaikan gagasanmu jika terpilih menjadi pengurus OSIS.</p>
-    <div class="field full">
-      <label for="visi">Visi <span class="req">*</span></label>
-      <textarea id="visi" name="visi" placeholder="Tuliskan visimu..." required></textarea>
-    </div>
-    <div class="field full">
-      <label for="misi">Misi <span class="req">*</span></label>
-      <textarea id="misi" name="misi" placeholder="Tuliskan misimu (bisa dalam poin-poin)..." required></textarea>
-    </div>
-  </section>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">05</span><h2>Alasan &amp; Tujuan</h2></div>
-    <p class="step-sub">Ceritakan motivasi kamu bergabung dengan OSIS.</p>
-    <div class="field full">
-      <label for="alasan">Alasan Masuk OSIS <span class="req">*</span></label>
-      <textarea id="alasan" name="alasan" placeholder="Mengapa kamu ingin bergabung dengan OSIS?" required></textarea>
-    </div>
-    <div class="field full">
-      <label for="tujuan">Tujuan Masuk OSIS <span class="req">*</span></label>
-      <textarea id="tujuan" name="tujuan" placeholder="Apa yang ingin kamu capai selama menjadi pengurus OSIS?" required></textarea>
-    </div>
-  </section>
-
-  <section class="step">
-    <div class="step-head"><span class="step-num">06</span><h2>Pas Foto 3×4</h2></div>
-    <p class="step-sub">Unggah dari galeri atau ambil langsung dari kamera.</p>
-    <div class="field full">
-      <div class="upload-box" id="fotoBox">
-        <div class="upload-thumb" id="fotoThumb">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A2647" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8 6l1.2-2h5.6L16 6"/></svg>
+  <!-- ===== LEFT PANEL ===== -->
+  <aside class="panel">
+    <div>
+      <div class="brand">
+        <img src="../aset/logo.png" alt="Logo OSIS" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <div class="eyebrow">Organisasi Siswa Intra Sekolah</div>
+          <div class="name">OSIS SMK Tunas Bangsa</div>
         </div>
-        <div class="upload-info">
-          <div class="fname" id="fotoName">Belum ada file dipilih</div>
-          <div class="fhint">Format JPG/PNG, wajib formal, kemeja putih &amp; bawahan abu SMK.</div>
-          <div class="upload-actions">
-            <label class="btn-file">
-              Pilih / Ambil Foto
-              <input type="file" id="fotoInput" name="fotoInput" accept="image/*" style="display:none" required>
-            </label>
-            <button type="button" class="link-example" data-example="foto">Lihat contoh foto</button>
+      </div>
+
+      <div class="hero-copy">
+        <span class="tag">Periode Kepengurusan Baru</span>
+        <h1>Satu formulir, langkah pertama menuju kepengurusan.</h1>
+        <p>Lengkapi data di sebelah kanan — kartu keanggotaanmu akan terisi otomatis seiring kamu mengetik.</p>
+      </div>
+
+      <div class="idcard-wrap">
+        <div class="idcard">
+          <div class="idcard-top">
+            <div>
+              <div class="k-label">Kartu Calon Pengurus</div>
+              <div class="k-org">OSIS Tunas Bangsa</div>
+            </div>
+          </div>
+          <div class="idcard-body">
+            <div class="idcard-photo" id="cardPhotoBox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#5b6472" stroke-width="1.5"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.6-4 4.4-6 7.5-6s5.9 2 7.5 6"/></svg>
+            </div>
+            <div class="idcard-info">
+              <div class="id-name" id="cardName">Nama Lengkap</div>
+              <span class="id-role" id="cardRole">Belum memilih jabatan</span>
+              <div class="id-meta">
+                Kelas <span id="cardKelas">—</span><br>
+                No. HP <span id="cardHp">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="idcard-foot">
+            <div class="barcode" id="barcode"></div>
+            <div class="no">FORM/OSIS/2026</div>
+          </div>
+        </div>
+        <div class="idcard-caption">pratinjau langsung kartu pendaftaranmu</div>
+      </div>
+    </div>
+
+    <div class="panel-foot">
+      Pastikan seluruh data diisi dengan jujur dan dapat dipertanggungjawabkan.<br>
+      Butuh bantuan? Hubungi <b>panitia OSIS</b> di sekolah.
+    </div>
+  </aside>
+
+  <!-- ===== RIGHT CONTENT / FORM ===== -->
+  <main class="content">
+    <div class="content-head">
+      <div class="step-eyebrow">Formulir Pendaftaran</div>
+      <h2>Pendaftaran Calon Pengurus OSIS</h2>
+      <p>Isi seluruh data di bawah ini dengan lengkap dan benar. Data yang kamu kirim akan tersimpan langsung ke basis data panitia dan digunakan sebagai bahan seleksi.</p>
+    </div>
+
+    <form id="formOsis" novalidate>
+
+      <!-- SECTION 1 — DATA DIRI -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-num">01</span>
+          <div>
+            <h3>Data Diri</h3>
+            <p class="section-sub">Informasi dasar tentang kamu.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="nama">Nama Lengkap</label>
+          <input type="text" id="nama" name="nama" placeholder="Contoh: Nadia Putri Ramadhani" required>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="tempatLahir">Tempat Lahir</label>
+            <input type="text" id="tempatLahir" name="tempatLahir" placeholder="Contoh: Jakarta" required>
+          </div>
+          <div class="field">
+            <label for="tanggalLahir">Tanggal Lahir</label>
+            <input type="date" id="tanggalLahir" name="tanggalLahir" required>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="kelas">Kelas</label>
+            <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI TKJ 1" required>
+          </div>
+          <div class="field">
+            <label for="agama">Agama</label>
+            <select id="agama" name="agama" required>
+              <option value="" disabled selected>Pilih agama</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen Protestan">Kristen Protestan</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Konghucu">Konghucu</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="noHp">Nomor HP / WhatsApp</label>
+            <input type="tel" id="noHp" name="noHp" placeholder="08xxxxxxxxxx" pattern="[0-9+ ]{9,15}" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="nama@email.com" required>
           </div>
         </div>
       </div>
-      <div class="note-box">Pastikan pas foto diambil dengan pencahayaan cukup, wajah menghadap depan, dan mengenakan seragam putih abu sesuai ketentuan SMK.</div>
-    </div>
-  </section>
 
-  <section class="step">
-    <div class="step-head"><span class="step-num">07</span><h2>Tanda Tangan</h2></div>
-    <p class="step-sub">Unggah foto tanda tangan di atas kertas putih, atau ambil dari kamera.</p>
-    <div class="field full">
-      <div class="upload-box" id="ttdBox">
-        <div class="upload-thumb" id="ttdThumb">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A2647" stroke-width="1.6"><path d="M4 16c2-1 3-4 5-4s2 3 4 3 2-4 4-4 2 3 3 2"/><path d="M4 20h16"/></svg>
+      <!-- SECTION 2 — JABATAN -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-num">02</span>
+          <div>
+            <h3>Jabatan yang Diinginkan</h3>
+            <p class="section-sub">Pilih satu posisi yang paling sesuai dengan minatmu.</p>
+          </div>
         </div>
-        <div class="upload-info">
-          <div class="fname" id="ttdName">Belum ada file dipilih</div>
-          <div class="fhint">Tanda tangan jelas di atas kertas polos berwarna putih.</div>
-          <div class="upload-actions">
-            <label class="btn-file">
-              Pilih / Ambil Foto
-              <input type="file" id="ttdInput" name="ttdInput" accept="image/*" style="display:none" required>
-            </label>
-            <button type="button" class="link-example" data-example="ttd">Lihat contoh tanda tangan</button>
+
+        <div class="field">
+          <label for="jabatan">Jabatan</label>
+          <select id="jabatan" name="jabatan" required>
+            <option value="" disabled selected>Pilih jabatan</option>
+            <optgroup label="--- PENGURUS INTI ---">
+              <option value="KETUA OSIS">KETUA OSIS</option>
+              <option value="WAKIL KETUA OSIS">WAKIL KETUA OSIS</option>
+              <option value="SEKRETARIS 1">SEKRETARIS 1</option>
+              <option value="SEKRETARIS 2">SEKRETARIS 2</option>
+              <option value="BENDAHARA 1">BENDAHARA 1</option>
+              <option value="BENDAHARA 2">BENDAHARA 2</option>
+            </optgroup>
+            <optgroup label="--- SEKSI BIDANG (SEKBID) ---">
+              <option value="SEKBID 1: KEROHANIAN & KEDISIPLINAN">SEKBID 1: KEROHANIAN & KEDISIPLINAN</option>
+              <option value="SEKBID 2: SENI & KREATIVITAS">SEKBID 2: SENI & KREATIVITAS</option>
+              <option value="SEKBID 3: KEAMANAN & KEBERSIHAN">SEKBID 3: KEAMANAN & KEBERSIHAN</option>
+              <option value="SEKBID 4: INVENTARIS & PENGELOLAAN">SEKBID 4: INVENTARIS & PENGELOLAAN</option>
+              <option value="SEKBID 5: KOMUNIKASI & PUBLIKASI">SEKBID 5: KOMUNIKASI & PUBLIKASI</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="pengalaman">Pengalaman Organisasi <span class="opt">opsional</span></label>
+          <textarea id="pengalaman" name="pengalaman" placeholder="Ceritakan pengalaman berorganisasi yang pernah kamu ikuti (jika ada)."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 3 — VISI MISI -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-num">03</span>
+          <div>
+            <h3>Visi, Misi & Alasan</h3>
+            <p class="section-sub">Sampaikan gagasan dan motivasimu.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="visi">Visi</label>
+          <textarea id="visi" name="visi" placeholder="Tuliskan visimu sebagai calon pengurus OSIS." required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="misi">Misi</label>
+          <textarea id="misi" name="misi" placeholder="Tuliskan misi yang akan kamu jalankan." required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="alasan">Alasan Masuk OSIS</label>
+          <textarea id="alasan" name="alasan" placeholder="Apa yang mendorongmu untuk mendaftar?" required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="tujuan">Tujuan Masuk OSIS</label>
+          <textarea id="tujuan" name="tujuan" placeholder="Apa yang ingin kamu capai jika terpilih?" required></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 4 — BERKAS -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-num">04</span>
+          <div>
+            <h3>Unggah Berkas</h3>
+            <p class="section-sub">Pas foto dan tanda tangan, sesuai contoh yang tersedia.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Pas Foto 3x4 <span class="opt">wajib · formal · background putih/abu</span></label>
+          <div class="upload-box">
+            <div class="upload-preview" id="fotoPreviewBox">Belum ada foto</div>
+            <div class="upload-actions">
+              <div class="helper">Gunakan pakaian seragam SMK, wajah menghadap kamera, latar polos putih atau abu-abu. Lihat <a class="example-link" href="../aset/contohfoto.jpg" target="_blank" rel="noopener">contoh pas foto di sini</a>.</div>
+              <div class="row-btns">
+                <label class="btn-mini" for="fotoFile">Unggah dari galeri</label>
+                <label class="btn-mini ghost" for="fotoCamera">Ambil dari kamera</label>
+              </div>
+              <input type="file" id="fotoFile" accept="image/*" style="display:none" required>
+              <input type="file" id="fotoCamera" accept="image/*" capture="environment" style="display:none">
+              <span class="filename" id="fotoFileName"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tanda Tangan <span class="opt">wajib</span></label>
+          <div class="upload-box">
+            <div class="upload-preview ttd" id="ttdPreviewBox">Belum ada TTD</div>
+            <div class="upload-actions">
+              <div class="helper">Tanda tangan di atas kertas putih polos, foto dengan pencahayaan terang. Lihat <a class="example-link" href="../aset/contohttd.jpg" target="_blank" rel="noopener">contoh tanda tangan di sini</a>.</div>
+              <div class="row-btns">
+                <label class="btn-mini" for="ttdFile">Unggah dari galeri</label>
+                <label class="btn-mini ghost" for="ttdCamera">Ambil dari kamera</label>
+              </div>
+              <input type="file" id="ttdFile" accept="image/*" style="display:none" required>
+              <input type="file" id="ttdCamera" accept="image/*" capture="environment" style="display:none">
+              <span class="filename" id="ttdFileName"></span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <div class="submit-zone">
-    <div class="seal"><span>OSIS<br>SAH</span></div>
-    <button type="submit">Kirim Pendaftaran</button>
-    <p class="small">Dengan mengirim formulir ini, kamu menyatakan bahwa seluruh data yang diisi benar dan dapat dipertanggungjawabkan.</p>
-  </div>
-
-</form>
-</div>
-</div>
-
-<footer class="pagefoot">© Panitia Pemilihan Pengurus OSIS · Formulir Pendaftaran Digital</footer>
-
-<!-- Modal contoh foto/ttd -->
-<div class="modal-overlay" id="exampleModal">
-  <div class="modal-box">
-    <img id="exampleImg" src="" alt="Contoh">
-    <div class="modal-cap">
-      <span id="exampleCap">Contoh</span>
-      <button type="button" onclick="closeModal()">Tutup ✕</button>
-    </div>
-  </div>
-</div>
-
-<!-- Success -->
-<div id="successOverlay">
-  <div class="id-card">
-    <div class="id-card-top">
-      <div class="eyebrow">✓ Pendaftaran Terkirim</div>
-    </div>
-    <div class="id-card-body">
-      <div class="id-photo" id="successPhoto">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A2647" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/></svg>
+      <div class="submit-row">
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          Kirim Pendaftaran
+        </button>
+        <div class="submit-note">Dengan mengirim formulir ini, kamu menyatakan bahwa seluruh data yang diisi benar dan asli.</div>
       </div>
-      <div>
-        <p class="id-name" id="successName">Nama Pendaftar</p>
-        <span class="id-role" id="successRole">JABATAN</span>
-        <div class="id-meta" id="successMeta"></div>
-      </div>
-    </div>
-    <div class="id-card-foot">
-      <p>Terima kasih telah mendaftar. Panitia akan menghubungi kamu melalui nomor HP/email yang telah kamu daftarkan untuk tahap seleksi berikutnya.</p>
-      <button class="btn-close-success" onclick="closeSuccess()">Tutup</button>
-    </div>
-  </div>
+
+      <div class="status-box" id="statusBox"></div>
+    </form>
+  </main>
 </div>
 
 <script>
-  const examples = {
-    foto: {src:'aset/contohfoto.jpg', cap:'Contoh Pas Foto 3×4'},
-    ttd: {src:'aset/contohttd.jpg', cap:'Contoh Tanda Tangan'}
+/* ====================================================================
+   GANTI URL DI BAWAH INI dengan URL Web App Google Apps Script kamu
+   (lihat file Code.gs / README.md untuk cara deploy)
+   ==================================================================== */
+const SCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT";
+
+/* ---------- live id card preview ---------- */
+const el = id => document.getElementById(id);
+const barcode = el('barcode');
+for(let i=0;i<26;i++){
+  const bar=document.createElement('i');
+  bar.style.height=(6+Math.random()*10)+'px';
+  bar.style.opacity=(Math.random()>0.5?0.85:0.4);
+  barcode.appendChild(bar);
+}
+
+el('nama').addEventListener('input', e=>{
+  el('cardName').textContent = e.target.value.trim() || 'Nama Lengkap';
+});
+el('kelas').addEventListener('input', e=>{
+  el('cardKelas').textContent = e.target.value.trim() || '—';
+});
+el('noHp').addEventListener('input', e=>{
+  el('cardHp').textContent = e.target.value.trim() || '—';
+});
+el('jabatan').addEventListener('change', e=>{
+  el('cardRole').textContent = e.target.value || 'Belum memilih jabatan';
+});
+
+function readAsDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+
+function wireUpload(fileInputId, cameraInputId, previewBoxId, filenameId, cardPhoto){
+  const fileInput = el(fileInputId);
+  const cameraInput = el(cameraInputId);
+  const previewBox = el(previewBoxId);
+  const filenameEl = el(filenameId);
+
+  async function handle(input){
+    const f = input.files[0];
+    if(!f) return;
+    const dataUrl = await readAsDataURL(f);
+    previewBox.innerHTML = `<img src="${dataUrl}" alt="Pratinjau">`;
+    filenameEl.textContent = f.name;
+    if(cardPhoto){
+      el('cardPhotoBox').innerHTML = `<img src="${dataUrl}" alt="Foto">`;
+    }
+    // keep the "required" file in sync between the two inputs
+    fileInput._dataUrl = dataUrl;
+    fileInput._fileName = f.name;
+    fileInput._mimeType = f.type;
+  }
+  fileInput.addEventListener('change', ()=>handle(fileInput));
+  cameraInput.addEventListener('change', ()=>handle(cameraInput));
+}
+wireUpload('fotoFile','fotoCamera','fotoPreviewBox','fotoFileName', true);
+wireUpload('ttdFile','ttdCamera','ttdPreviewBox','ttdFileName', false);
+
+/* ---------- submit ---------- */
+const form = el('formOsis');
+const statusBox = el('statusBox');
+const btnSubmit = el('btnSubmit');
+
+function setStatus(kind, msg){
+  statusBox.className = 'status-box show ' + kind;
+  statusBox.innerHTML = msg;
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+
+  const fotoData = el('fotoFile')._dataUrl || el('fotoCamera')._dataUrl;
+  const ttdData = el('ttdFile')._dataUrl || el('ttdCamera')._dataUrl;
+  const fotoName = el('fotoFile')._fileName || el('fotoCamera')._fileName;
+  const ttdName = el('ttdFile')._fileName || el('ttdCamera')._fileName;
+
+  if(!form.checkValidity()){
+    form.reportValidity();
+    return;
+  }
+  if(!fotoData){ setStatus('err','Pas foto wajib diunggah sebelum mengirim formulir.'); return; }
+  if(!ttdData){ setStatus('err','Tanda tangan wajib diunggah sebelum mengirim formulir.'); return; }
+  if(SCRIPT_URL.includes('GANTI_DENGAN_URL')){
+    setStatus('err','Formulir belum terhubung ke basis data. Hubungi admin website untuk memasang URL Apps Script (lihat README.md).');
+    return;
+  }
+
+  const payload = {
+    action:'daftar',
+    nama: el('nama').value.trim(),
+    tempatLahir: el('tempatLahir').value.trim(),
+    tanggalLahir: el('tanggalLahir').value,
+    kelas: el('kelas').value.trim(),
+    agama: el('agama').value,
+    noHp: el('noHp').value.trim(),
+    email: el('email').value.trim(),
+    jabatan: el('jabatan').value,
+    pengalaman: el('pengalaman').value.trim(),
+    visi: el('visi').value.trim(),
+    misi: el('misi').value.trim(),
+    alasan: el('alasan').value.trim(),
+    tujuan: el('tujuan').value.trim(),
+    fotoBase64: fotoData,
+    fotoNama: fotoName,
+    ttdBase64: ttdData,
+    ttdNama: ttdName
   };
-  const modal = document.getElementById('exampleModal');
-  document.querySelectorAll('[data-example]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const ex = examples[btn.dataset.example];
-      document.getElementById('exampleImg').src = ex.src;
-      document.getElementById('exampleCap').textContent = ex.cap;
-      modal.classList.add('open');
-    });
-  });
-  modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
-  function closeModal(){ modal.classList.remove('open'); }
 
-  function wireUpload(inputId, boxId, thumbId, nameId){
-    const input = document.getElementById(inputId);
-    const box = document.getElementById(boxId);
-    const thumb = document.getElementById(thumbId);
-    const nameEl = document.getElementById(nameId);
-    input.addEventListener('change', ()=>{
-      const file = input.files[0];
-      if(!file) return;
-      nameEl.textContent = file.name;
-      box.classList.add('has-file');
-      const reader = new FileReader();
-      reader.onload = e=>{ thumb.innerHTML = `<img src="${e.target.result}" alt="preview">`; };
-      reader.readAsDataURL(file);
-      updateProgress();
-    });
-  }
-  wireUpload('fotoInput','fotoBox','fotoThumb','fotoName');
-  wireUpload('ttdInput','ttdBox','ttdThumb','ttdName');
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Mengirim...';
+  setStatus('load','Mengirim data, mohon tunggu sebentar...');
 
-  const form = document.getElementById('osisForm');
-  const requiredEls = () => Array.from(form.querySelectorAll('[required]'));
-  function updateProgress(){
-    const els = requiredEls();
-    let filled = 0;
-    els.forEach(el=>{
-      if(el.type === 'file'){ if(el.files.length) filled++; }
-      else if(el.value && el.value.trim() !== '') filled++;
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
     });
-    const pct = Math.round((filled/els.length)*100);
-    document.getElementById('progressBar').style.width = pct + '%';
-  }
-  form.addEventListener('input', updateProgress);
-  form.addEventListener('change', updateProgress);
-  updateProgress();
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    if(!form.checkValidity()){
-      form.reportValidity();
-      return;
+    const data = await res.json();
+    if(data.status === 'success'){
+      setStatus('ok', 'Pendaftaran berhasil dikirim! Terima kasih, ' + payload.nama + '. Panitia akan menghubungimu melalui WhatsApp atau email.');
+      form.reset();
+      el('cardName').textContent='Nama Lengkap';
+      el('cardRole').textContent='Belum memilih jabatan';
+      el('cardKelas').textContent='—';
+      el('cardHp').textContent='—';
+      el('cardPhotoBox').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#5b6472" stroke-width="1.5"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.6-4 4.4-6 7.5-6s5.9 2 7.5 6"/></svg>`;
+      el('fotoPreviewBox').textContent='Belum ada foto';
+      el('ttdPreviewBox').textContent='Belum ada TTD';
+      el('fotoFileName').textContent='';
+      el('ttdFileName').textContent='';
+    } else {
+      setStatus('err', 'Gagal mengirim: ' + (data.message || 'terjadi kesalahan pada server.'));
     }
-    const nama = document.getElementById('nama').value;
-    const jabatan = document.getElementById('jabatan').value;
-    const kelas = document.getElementById('kelas').value;
-    document.getElementById('successName').textContent = nama;
-    document.getElementById('successRole').textContent = jabatan;
-    document.getElementById('successMeta').textContent = 'Kelas ' + kelas;
-    const fotoFile = document.getElementById('fotoInput').files[0];
-    if(fotoFile){
-      const reader = new FileReader();
-      reader.onload = ev=>{
-        document.getElementById('successPhoto').innerHTML = `<img src="${ev.target.result}" alt="foto">`;
-      };
-      reader.readAsDataURL(fotoFile);
-    }
-    document.getElementById('successOverlay').classList.add('open');
-    // NOTE: form ini belum terhubung ke server/database.
-    // Tambahkan logika fetch()/AJAX di sini untuk mengirim `new FormData(form)`
-    // ke backend/Google Apps Script/API sesuai kebutuhan.
-  });
-  function closeSuccess(){
-    document.getElementById('successOverlay').classList.remove('open');
+  }catch(err){
+    setStatus('err', 'Gagal terhubung ke server. Periksa koneksi internet atau hubungi admin.');
+  }finally{
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'Kirim Pendaftaran';
   }
+});
 </script>
 </body>
 </html>
