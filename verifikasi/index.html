@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verifikasi Pendaftaran OSIS — Panel Panitia</title>
-<meta name="description" content="Panel verifikasi dan pemantauan data pendaftaran calon pengurus OSIS untuk panitia dan admin.">
+<title>Verifikasi Pendaftaran OSIS</title>
+<meta name="description" content="Halaman publik untuk memantau data pendaftaran calon pengurus OSIS dan melaporkan data yang terindikasi palsu. Panitia dapat masuk sebagai admin untuk menghapus data.">
 <link rel="icon" href="../aset/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,61 +28,14 @@
   body{margin:0; font-family:'Inter',sans-serif; background:var(--cream); color:var(--ink);}
   a{color:inherit;}
 
-  /* ============ LOGIN GATE ============ */
-  #loginGate{
-    min-height:100vh;
-    display:flex; align-items:center; justify-content:center;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(200,155,60,0.16), transparent 45%),
-      radial-gradient(circle at 85% 90%, rgba(124,36,50,0.25), transparent 50%),
-      linear-gradient(160deg, var(--navy), var(--navy-2));
-    padding:24px;
-  }
-  .login-card{
-    background:var(--paper);
-    border-radius:16px;
-    padding:40px 36px;
-    width:100%;
-    max-width:380px;
-    box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
-    text-align:center;
-  }
-  .login-card img{width:52px; height:52px; object-fit:contain; margin-bottom:14px;}
-  .login-card .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--maroon); font-weight:700;
-  }
-  .login-card h1{
-    font-family:'Fraunces', serif; font-size:24px; margin:8px 0 4px;
-  }
-  .login-card p{color:var(--slate); font-size:13px; margin:0 0 22px;}
-  .login-card input{
-    width:100%; padding:13px 14px; border-radius:9px;
-    border:1.5px solid var(--line); font-size:14px;
-    font-family:'JetBrains Mono', monospace; letter-spacing:.05em;
-    margin-bottom:12px;
-  }
-  .login-card input:focus{outline:none; border-color:var(--maroon); box-shadow:0 0 0 3.5px rgba(124,36,50,0.12);}
-  .login-card button{
-    width:100%; padding:13px; border:none; border-radius:9px;
-    background:var(--maroon); color:#fff; font-family:'Fraunces',serif;
-    font-weight:600; font-size:15px; cursor:pointer;
-    transition:transform .15s;
-  }
-  .login-card button:hover{transform:translateY(-2px);}
-  .login-error{color:var(--err); font-size:12.5px; margin-top:10px; min-height:16px;}
-
-  /* ============ DASHBOARD ============ */
-  #dashboard{display:none;}
-  #dashboard.show{display:block;}
-
+  /* ============ TOPBAR ============ */
   .topbar{
     background:var(--navy); color:var(--cream);
     padding:16px 28px;
     display:flex; align-items:center; justify-content:space-between;
     position:sticky; top:0; z-index:20;
     box-shadow:0 6px 20px -10px rgba(0,0,0,0.4);
+    flex-wrap:wrap; gap:10px;
   }
   .topbar .brand{display:flex; align-items:center; gap:12px;}
   .topbar .brand img{width:34px; height:34px; object-fit:contain;}
@@ -99,7 +52,15 @@
   }
   .btn-top:hover{background:rgba(255,255,255,0.08);}
   .btn-top.gold{background:var(--gold); border-color:var(--gold); color:var(--navy);}
+  .admin-badge{
+    display:flex; align-items:center; gap:9px;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    background:rgba(228,200,118,0.15); border:1px solid rgba(228,200,118,0.4);
+    color:var(--gold-light); padding:6px 12px; border-radius:999px;
+  }
+  .admin-badge .dot{width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,0.25);}
 
+  /* ============ LAYOUT ============ */
   .layout{
     display:grid;
     grid-template-columns:340px 1fr;
@@ -107,7 +68,6 @@
   }
   @media (max-width:860px){ .layout{grid-template-columns:1fr;} }
 
-  /* sidebar list */
   .sidebar{
     border-right:1px solid var(--line);
     background:var(--paper);
@@ -140,7 +100,6 @@
   }
   .empty-state{color:var(--slate); font-size:13px; text-align:center; padding:30px 10px;}
 
-  /* detail panel */
   .detail{padding:34px 40px 80px;}
   @media (max-width:600px){ .detail{padding:24px 18px 60px;} }
   .detail-placeholder{
@@ -148,6 +107,12 @@
     height:60vh; color:var(--slate); text-align:center;
   }
   .detail-placeholder .big{font-family:'Fraunces',serif; font-style:italic; font-size:22px; color:var(--navy); margin-bottom:8px;}
+
+  .public-note{
+    background:#eef1f6; border:1px solid #d7dee8; color:var(--navy);
+    font-size:12.5px; line-height:1.6; padding:12px 15px; border-radius:10px; margin-bottom:24px;
+    max-width:760px;
+  }
 
   .dossier{max-width:760px;}
   .dossier-head{
@@ -171,7 +136,7 @@
     font-family:'JetBrains Mono', monospace; font-size:11px;
     padding:5px 11px; border-radius:999px;
   }
-  .dossier-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+  .dossier-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; align-items:center;}
   .btn-action{
     font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700;
     padding:9px 14px; border-radius:8px; cursor:pointer; border:1.5px solid var(--line);
@@ -181,6 +146,10 @@
   .btn-action:hover{transform:translateY(-1px);}
   .btn-action.report{border-color:#25D366; color:#178a45;}
   .btn-action.delete{border-color:var(--err); color:var(--err);}
+  .admin-hint{
+    font-size:11.5px; color:var(--slate); display:inline-flex; align-items:center; gap:6px;
+  }
+  .admin-hint a{color:var(--maroon); text-decoration:underline; text-underline-offset:2px; cursor:pointer;}
 
   .data-grid{
     display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; margin-bottom:26px;
@@ -214,78 +183,94 @@
   .status-banner.ok{background:#e9f3ee; color:var(--ok); border:1px solid #bfe0cf;}
   .status-banner.err{background:#fbeaec; color:var(--err); border:1px solid #f2c3c9;}
 
-  .confirm-overlay{
+  /* ============ MODALS ============ */
+  .overlay{
     position:fixed; inset:0; background:rgba(16,29,51,0.55);
     display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
   }
-  .confirm-overlay.show{display:flex;}
-  .confirm-box{
-    background:var(--paper); border-radius:14px; padding:26px; max-width:360px; width:100%;
+  .overlay.show{display:flex;}
+  .modal-box{
+    background:var(--paper); border-radius:14px; padding:30px; max-width:380px; width:100%;
     text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
   }
-  .confirm-box h3{font-family:'Fraunces',serif; margin:0 0 10px;}
-  .confirm-box p{font-size:13.5px; color:var(--slate); margin:0 0 20px; line-height:1.5;}
-  .confirm-box .row{display:flex; gap:10px;}
-  .confirm-box button{
-    flex:1; padding:11px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; border:none;
+  .modal-box img{width:44px; height:44px; object-fit:contain; margin-bottom:10px;}
+  .modal-box .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--maroon); font-weight:700;
   }
-  .confirm-box .cancel{background:var(--line); color:var(--ink);}
-  .confirm-box .ok-del{background:var(--err); color:#fff;}
+  .modal-box h3{font-family:'Fraunces',serif; margin:8px 0 6px; font-size:21px;}
+  .modal-box p{font-size:13px; color:var(--slate); margin:0 0 18px; line-height:1.5;}
+  .modal-box input[type=password]{
+    width:100%; padding:12px 13px; border-radius:9px;
+    border:1.5px solid var(--line); font-size:14px;
+    font-family:'JetBrains Mono', monospace; letter-spacing:.05em;
+    margin-bottom:10px;
+  }
+  .modal-box input:focus{outline:none; border-color:var(--maroon); box-shadow:0 0 0 3.5px rgba(124,36,50,0.12);}
+  .modal-error{color:var(--err); font-size:12px; min-height:16px; margin-bottom:6px;}
+  .modal-box .row{display:flex; gap:10px; margin-top:6px;}
+  .modal-box button{flex:1; padding:11px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; border:none;}
+  .modal-box .cancel{background:var(--line); color:var(--ink);}
+  .modal-box .ok-primary{background:var(--maroon); color:#fff;}
+  .modal-box .ok-del{background:var(--err); color:#fff;}
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN GATE ============ -->
-<div id="loginGate">
-  <div class="login-card">
-    <img src="../aset/logo.png" alt="Logo OSIS" onerror="this.style.display='none'">
-    <div class="eyebrow">Akses Terbatas</div>
-    <h1>Panel Verifikasi Admin</h1>
-    <p>Masukkan kata sandi panitia untuk memantau data pendaftaran calon pengurus OSIS.</p>
+<div class="topbar">
+  <div class="brand">
+    <img src="../aset/logo.png" alt="" onerror="this.style.display='none'">
+    <div class="brand-text">
+      <div class="eyebrow">Halaman Publik</div>
+      <div class="name">Verifikasi Pendaftaran OSIS</div>
+    </div>
+  </div>
+  <div class="topbar-actions" id="topbarActions">
+    <button class="btn-top" id="btnRefresh">Muat ulang data</button>
+    <button class="btn-top gold" id="btnOpenLogin">Masuk sebagai Admin</button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h2>Daftar Calon</h2>
+      <div class="count" id="countText">Memuat data...</div>
+    </div>
+    <input type="text" class="search-box" id="searchBox" placeholder="Cari nama...">
+    <div id="listContainer"></div>
+  </aside>
+
+  <main class="detail" id="detailPanel">
+    <div class="public-note">
+      Halaman ini terbuka untuk umum agar seluruh siswa dapat memeriksa data pendaftaran calon pengurus OSIS. Jika menemukan data yang terindikasi tidak sesuai atau palsu, gunakan tombol <b>Lapor Data Palsu</b> pada detail calon. Penghapusan data hanya dapat dilakukan oleh panitia yang masuk sebagai admin.
+    </div>
+    <div class="detail-placeholder">
+      <div class="big">Pilih salah satu calon</div>
+      <div>Klik nama di daftar sebelah kiri untuk melihat biodata lengkap.</div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ LOGIN MODAL ============ -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal-box">
+    <img src="../aset/logo.png" alt="" onerror="this.style.display='none'">
+    <div class="eyebrow">Akses Panitia</div>
+    <h3>Masuk sebagai Admin</h3>
+    <p>Masukkan kata sandi panitia untuk mengaktifkan hak hapus data.</p>
     <input type="password" id="adminPw" placeholder="Kata sandi admin" autocomplete="off">
-    <button id="btnLogin">Masuk</button>
-    <div class="login-error" id="loginError"></div>
+    <div class="modal-error" id="loginError"></div>
+    <div class="row">
+      <button class="cancel" id="btnCancelLogin">Batal</button>
+      <button class="ok-primary" id="btnDoLogin">Masuk</button>
+    </div>
   </div>
 </div>
 
-<!-- ============ DASHBOARD ============ -->
-<div id="dashboard">
-  <div class="topbar">
-    <div class="brand">
-      <img src="../aset/logo.png" alt="" onerror="this.style.display='none'">
-      <div class="brand-text">
-        <div class="eyebrow">Panel Panitia</div>
-        <div class="name">Verifikasi Pendaftaran OSIS</div>
-      </div>
-    </div>
-    <div class="topbar-actions">
-      <button class="btn-top" id="btnRefresh">Muat ulang data</button>
-      <button class="btn-top gold" id="btnLogout">Keluar</button>
-    </div>
-  </div>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-head">
-        <h2>Daftar Calon</h2>
-        <div class="count" id="countText">Memuat data...</div>
-      </div>
-      <input type="text" class="search-box" id="searchBox" placeholder="Cari nama...">
-      <div id="listContainer"></div>
-    </aside>
-
-    <main class="detail" id="detailPanel">
-      <div class="detail-placeholder">
-        <div class="big">Pilih salah satu calon</div>
-        <div>Klik nama di daftar sebelah kiri untuk melihat biodata lengkap.</div>
-      </div>
-    </main>
-  </div>
-</div>
-
-<!-- confirm delete overlay -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
+<!-- ============ CONFIRM DELETE MODAL ============ -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal-box">
     <h3>Hapus data ini?</h3>
     <p>Data pendaftaran akan dihapus permanen dari spreadsheet dan tidak dapat dikembalikan.</p>
     <div class="row">
@@ -309,39 +294,63 @@ let allData = [];
 let activeId = null;
 let pendingDeleteId = null;
 
-/* ---------- login ---------- */
-function tryLogin(){
-  const val = el('adminPw').value;
-  if(val === ADMIN_PASSWORD){
+function isAdmin(){ return sessionStorage.getItem('osis_admin_ok') === '1'; }
+
+/* ---------- topbar admin state ---------- */
+function renderTopbar(){
+  if(isAdmin()){
+    el('topbarActions').innerHTML = `
+      <button class="btn-top" id="btnRefresh">Muat ulang data</button>
+      <div class="admin-badge"><span class="dot"></span> Mode Admin aktif</div>
+      <button class="btn-top gold" id="btnLogout">Keluar Admin</button>
+    `;
+    el('btnLogout').addEventListener('click', ()=>{
+      sessionStorage.removeItem('osis_admin_ok');
+      renderTopbar();
+      if(activeId) showDetail(activeId);
+    });
+  } else {
+    el('topbarActions').innerHTML = `
+      <button class="btn-top" id="btnRefresh">Muat ulang data</button>
+      <button class="btn-top gold" id="btnOpenLogin">Masuk sebagai Admin</button>
+    `;
+    el('btnOpenLogin').addEventListener('click', openLogin);
+  }
+  el('btnRefresh').addEventListener('click', loadData);
+}
+
+/* ---------- login modal ---------- */
+function openLogin(){
+  el('adminPw').value=''; el('loginError').textContent='';
+  el('loginOverlay').classList.add('show');
+  el('adminPw').focus();
+}
+function closeLogin(){ el('loginOverlay').classList.remove('show'); }
+el('btnCancelLogin').addEventListener('click', closeLogin);
+el('btnDoLogin').addEventListener('click', doLogin);
+el('adminPw').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+function doLogin(){
+  if(el('adminPw').value === ADMIN_PASSWORD){
     sessionStorage.setItem('osis_admin_ok','1');
-    el('loginGate').style.display='none';
-    el('dashboard').classList.add('show');
-    loadData();
+    closeLogin();
+    renderTopbar();
+    if(activeId) showDetail(activeId);
   } else {
     el('loginError').textContent = 'Kata sandi salah. Coba lagi.';
   }
 }
-el('btnLogin').addEventListener('click', tryLogin);
-el('adminPw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+el('btnOpenLogin') && el('btnOpenLogin').addEventListener('click', openLogin);
 
-el('btnLogout').addEventListener('click', ()=>{
-  sessionStorage.removeItem('osis_admin_ok');
-  location.reload();
-});
+renderTopbar();
 
-if(sessionStorage.getItem('osis_admin_ok') === '1'){
-  el('loginGate').style.display='none';
-  el('dashboard').classList.add('show');
-  loadData();
-}
-
-/* ---------- load list from Apps Script ---------- */
+/* ---------- load list from Apps Script (public, no login needed) ---------- */
 async function loadData(){
   el('countText').textContent = 'Memuat data...';
   el('listContainer').innerHTML = '';
   if(SCRIPT_URL.includes('GANTI_DENGAN_URL')){
     el('countText').textContent = 'Belum terhubung ke spreadsheet.';
-    el('listContainer').innerHTML = '<div class="empty-state">Panel ini belum terhubung ke Google Apps Script. Lihat README.md untuk cara memasang URL.</div>';
+    el('listContainer').innerHTML = '<div class="empty-state">Halaman ini belum terhubung ke Google Apps Script. Lihat README.md untuk cara memasang URL.</div>';
     return;
   }
   try{
@@ -354,7 +363,7 @@ async function loadData(){
     el('listContainer').innerHTML = '<div class="empty-state">Tidak dapat terhubung ke server. Periksa koneksi atau URL Apps Script.</div>';
   }
 }
-el('btnRefresh').addEventListener('click', loadData);
+loadData();
 
 function renderList(items){
   el('countText').textContent = items.length + ' calon terdaftar';
@@ -393,12 +402,16 @@ function escapeHtml(str){
   return String(str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-/* ---------- detail view ---------- */
+/* ---------- detail view (visible to everyone) ---------- */
 function showDetail(id){
   const item = allData.find(i => String(i.id) === String(id));
   if(!item) return;
   const waText = encodeURIComponent(`Halo panitia OSIS, saya ingin melaporkan bahwa data pendaftaran atas nama "${item.nama}" (Kelas ${item.kelas}) terindikasi PALSU / tidak sesuai. Mohon ditindaklanjuti.`);
   const waLink = `https://wa.me/${REPORT_WA_NUMBER}?text=${waText}`;
+
+  const deleteControl = isAdmin()
+    ? `<button class="btn-action delete" id="btnDelete">Hapus Data</button>`
+    : `<span class="admin-hint">Hanya admin yang bisa menghapus data — <a id="linkLoginInline">masuk sebagai admin</a></span>`;
 
   el('detailPanel').innerHTML = `
     <div class="dossier">
@@ -410,7 +423,7 @@ function showDetail(id){
           <span class="role-pill">${escapeHtml(item.jabatan||'-')}</span>
           <div class="dossier-actions">
             <a class="btn-action report" href="${waLink}" target="_blank" rel="noopener">Lapor Data Palsu</a>
-            <button class="btn-action delete" id="btnDelete">Hapus Data</button>
+            ${deleteControl}
           </div>
         </div>
       </div>
@@ -439,13 +452,18 @@ function showDetail(id){
     </div>
   `;
 
-  el('btnDelete').addEventListener('click', ()=>{
-    pendingDeleteId = item.id;
-    el('confirmOverlay').classList.add('show');
-  });
+  if(isAdmin()){
+    el('btnDelete').addEventListener('click', ()=>{
+      pendingDeleteId = item.id;
+      el('confirmOverlay').classList.add('show');
+    });
+  } else {
+    const link = document.getElementById('linkLoginInline');
+    if(link) link.addEventListener('click', openLogin);
+  }
 }
 
-/* ---------- delete flow ---------- */
+/* ---------- delete flow (admin only, password re-checked on server) ---------- */
 el('btnCancelDelete').addEventListener('click', ()=>{
   pendingDeleteId = null;
   el('confirmOverlay').classList.remove('show');
