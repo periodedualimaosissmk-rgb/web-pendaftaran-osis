@@ -1,1 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifikasi Pendaftaran OSIS — Panel Panitia</title>
+<meta name="description" content="Panel verifikasi dan pemantauan data pendaftaran calon pengurus OSIS untuk panitia dan admin.">
+<link rel="icon" href="../aset/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101d33;
+    --navy-2:#1c3057;
+    --gold:#c89b3c;
+    --gold-light:#e4c876;
+    --cream:#f7f3e9;
+    --paper:#fffdf8;
+    --maroon:#7c2432;
+    --ink:#181614;
+    --slate:#5b6472;
+    --line:#e4dcc8;
+    --ok:#2f6b4f;
+    --err:#a3323d;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Inter',sans-serif; background:var(--cream); color:var(--ink);}
+  a{color:inherit;}
 
+  /* ============ LOGIN GATE ============ */
+  #loginGate{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(200,155,60,0.16), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(124,36,50,0.25), transparent 50%),
+      linear-gradient(160deg, var(--navy), var(--navy-2));
+    padding:24px;
+  }
+  .login-card{
+    background:var(--paper);
+    border-radius:16px;
+    padding:40px 36px;
+    width:100%;
+    max-width:380px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
+    text-align:center;
+  }
+  .login-card img{width:52px; height:52px; object-fit:contain; margin-bottom:14px;}
+  .login-card .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--maroon); font-weight:700;
+  }
+  .login-card h1{
+    font-family:'Fraunces', serif; font-size:24px; margin:8px 0 4px;
+  }
+  .login-card p{color:var(--slate); font-size:13px; margin:0 0 22px;}
+  .login-card input{
+    width:100%; padding:13px 14px; border-radius:9px;
+    border:1.5px solid var(--line); font-size:14px;
+    font-family:'JetBrains Mono', monospace; letter-spacing:.05em;
+    margin-bottom:12px;
+  }
+  .login-card input:focus{outline:none; border-color:var(--maroon); box-shadow:0 0 0 3.5px rgba(124,36,50,0.12);}
+  .login-card button{
+    width:100%; padding:13px; border:none; border-radius:9px;
+    background:var(--maroon); color:#fff; font-family:'Fraunces',serif;
+    font-weight:600; font-size:15px; cursor:pointer;
+    transition:transform .15s;
+  }
+  .login-card button:hover{transform:translateY(-2px);}
+  .login-error{color:var(--err); font-size:12.5px; margin-top:10px; min-height:16px;}
+
+  /* ============ DASHBOARD ============ */
+  #dashboard{display:none;}
+  #dashboard.show{display:block;}
+
+  .topbar{
+    background:var(--navy); color:var(--cream);
+    padding:16px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:20;
+    box-shadow:0 6px 20px -10px rgba(0,0,0,0.4);
+  }
+  .topbar .brand{display:flex; align-items:center; gap:12px;}
+  .topbar .brand img{width:34px; height:34px; object-fit:contain;}
+  .topbar .brand-text .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--gold-light);
+  }
+  .topbar .brand-text .name{font-family:'Fraunces', serif; font-weight:700; font-size:15px;}
+  .topbar-actions{display:flex; align-items:center; gap:10px;}
+  .btn-top{
+    font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600;
+    padding:8px 14px; border-radius:8px; cursor:pointer; border:1.5px solid rgba(255,255,255,0.25);
+    background:transparent; color:var(--cream);
+  }
+  .btn-top:hover{background:rgba(255,255,255,0.08);}
+  .btn-top.gold{background:var(--gold); border-color:var(--gold); color:var(--navy);}
+
+  .layout{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    min-height:calc(100vh - 66px);
+  }
+  @media (max-width:860px){ .layout{grid-template-columns:1fr;} }
+
+  /* sidebar list */
+  .sidebar{
+    border-right:1px solid var(--line);
+    background:var(--paper);
+    padding:20px 18px 40px;
+  }
+  .sidebar-head{margin-bottom:14px;}
+  .sidebar-head h2{font-family:'Fraunces', serif; font-size:18px; margin:0 0 4px;}
+  .sidebar-head .count{font-size:12px; color:var(--slate);}
+  .search-box{
+    width:100%; padding:10px 12px; border-radius:8px;
+    border:1.5px solid var(--line); font-size:13px; margin-bottom:14px;
+  }
+  .search-box:focus{outline:none; border-color:var(--maroon);}
+  .list-item{
+    display:flex; align-items:center; gap:12px;
+    padding:11px 10px; border-radius:10px; cursor:pointer;
+    margin-bottom:4px; border:1px solid transparent;
+    transition:background .15s;
+  }
+  .list-item:hover{background:#f1ead6;}
+  .list-item.active{background:#fdf3df; border-color:var(--gold);}
+  .list-item .avatar{
+    width:38px; height:38px; border-radius:8px; overflow:hidden; flex-shrink:0;
+    background:#e9e2ce; display:flex; align-items:center; justify-content:center;
+  }
+  .list-item .avatar img{width:100%; height:100%; object-fit:cover;}
+  .list-item .li-name{font-size:13.5px; font-weight:600; line-height:1.3;}
+  .list-item .li-role{
+    font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--maroon); margin-top:2px;
+  }
+  .empty-state{color:var(--slate); font-size:13px; text-align:center; padding:30px 10px;}
+
+  /* detail panel */
+  .detail{padding:34px 40px 80px;}
+  @media (max-width:600px){ .detail{padding:24px 18px 60px;} }
+  .detail-placeholder{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:60vh; color:var(--slate); text-align:center;
+  }
+  .detail-placeholder .big{font-family:'Fraunces',serif; font-style:italic; font-size:22px; color:var(--navy); margin-bottom:8px;}
+
+  .dossier{max-width:760px;}
+  .dossier-head{
+    display:flex; gap:20px; align-items:flex-start;
+    padding-bottom:26px; border-bottom:1px solid var(--line); margin-bottom:26px;
+    flex-wrap:wrap;
+  }
+  .dossier-photo{
+    width:100px; height:128px; border-radius:10px; overflow:hidden;
+    background:#e9e2ce; border:1px solid var(--line); flex-shrink:0;
+  }
+  .dossier-photo img{width:100%; height:100%; object-fit:cover;}
+  .dossier-id{flex:1; min-width:220px;}
+  .dossier-id .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--maroon); font-weight:700;
+  }
+  .dossier-id h2{font-family:'Fraunces', serif; font-size:26px; margin:6px 0 8px;}
+  .dossier-id .role-pill{
+    display:inline-block; background:var(--navy); color:#fff;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    padding:5px 11px; border-radius:999px;
+  }
+  .dossier-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+  .btn-action{
+    font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700;
+    padding:9px 14px; border-radius:8px; cursor:pointer; border:1.5px solid var(--line);
+    background:var(--paper); display:inline-flex; align-items:center; gap:7px;
+    transition:transform .15s;
+  }
+  .btn-action:hover{transform:translateY(-1px);}
+  .btn-action.report{border-color:#25D366; color:#178a45;}
+  .btn-action.delete{border-color:var(--err); color:var(--err);}
+
+  .data-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; margin-bottom:26px;
+  }
+  @media (max-width:560px){ .data-grid{grid-template-columns:1fr;} }
+  .data-item .dl{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--slate); margin-bottom:4px;
+  }
+  .data-item .dv{font-size:14.5px; line-height:1.5;}
+
+  .prose-block{margin-bottom:22px;}
+  .prose-block .dl{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--maroon); font-weight:700; margin-bottom:6px;
+  }
+  .prose-block .dv{
+    font-size:14.5px; line-height:1.65; background:var(--paper); border:1px solid var(--line);
+    border-radius:10px; padding:14px 16px; white-space:pre-wrap;
+  }
+
+  .ttd-block{margin-top:26px;}
+  .ttd-block img{
+    max-width:220px; border:1px solid var(--line); border-radius:8px; background:#fff; padding:8px;
+  }
+
+  .status-banner{
+    margin:18px 0; padding:12px 14px; border-radius:9px; font-size:13px; display:none;
+  }
+  .status-banner.show{display:block;}
+  .status-banner.ok{background:#e9f3ee; color:var(--ok); border:1px solid #bfe0cf;}
+  .status-banner.err{background:#fbeaec; color:var(--err); border:1px solid #f2c3c9;}
+
+  .confirm-overlay{
+    position:fixed; inset:0; background:rgba(16,29,51,0.55);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .confirm-overlay.show{display:flex;}
+  .confirm-box{
+    background:var(--paper); border-radius:14px; padding:26px; max-width:360px; width:100%;
+    text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
+  }
+  .confirm-box h3{font-family:'Fraunces',serif; margin:0 0 10px;}
+  .confirm-box p{font-size:13.5px; color:var(--slate); margin:0 0 20px; line-height:1.5;}
+  .confirm-box .row{display:flex; gap:10px;}
+  .confirm-box button{
+    flex:1; padding:11px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; border:none;
+  }
+  .confirm-box .cancel{background:var(--line); color:var(--ink);}
+  .confirm-box .ok-del{background:var(--err); color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="loginGate">
+  <div class="login-card">
+    <img src="../aset/logo.png" alt="Logo OSIS" onerror="this.style.display='none'">
+    <div class="eyebrow">Akses Terbatas</div>
+    <h1>Panel Verifikasi Admin</h1>
+    <p>Masukkan kata sandi panitia untuk memantau data pendaftaran calon pengurus OSIS.</p>
+    <input type="password" id="adminPw" placeholder="Kata sandi admin" autocomplete="off">
+    <button id="btnLogin">Masuk</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="brand">
+      <img src="../aset/logo.png" alt="" onerror="this.style.display='none'">
+      <div class="brand-text">
+        <div class="eyebrow">Panel Panitia</div>
+        <div class="name">Verifikasi Pendaftaran OSIS</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-top" id="btnRefresh">Muat ulang data</button>
+      <button class="btn-top gold" id="btnLogout">Keluar</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2>Daftar Calon</h2>
+        <div class="count" id="countText">Memuat data...</div>
+      </div>
+      <input type="text" class="search-box" id="searchBox" placeholder="Cari nama...">
+      <div id="listContainer"></div>
+    </aside>
+
+    <main class="detail" id="detailPanel">
+      <div class="detail-placeholder">
+        <div class="big">Pilih salah satu calon</div>
+        <div>Klik nama di daftar sebelah kiri untuk melihat biodata lengkap.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- confirm delete overlay -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Hapus data ini?</h3>
+    <p>Data pendaftaran akan dihapus permanen dari spreadsheet dan tidak dapat dikembalikan.</p>
+    <div class="row">
+      <button class="cancel" id="btnCancelDelete">Batal</button>
+      <button class="ok-del" id="btnConfirmDelete">Ya, hapus</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====================================================================
+   GANTI URL DI BAWAH INI dengan URL Web App Google Apps Script kamu
+   (harus sama dengan yang dipakai di daftar/index.html)
+   ==================================================================== */
+const SCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT";
+const ADMIN_PASSWORD = "osistunas123";
+const REPORT_WA_NUMBER = "6285178399532"; // 085178399532 dalam format internasional
+
+const el = id => document.getElementById(id);
+let allData = [];
+let activeId = null;
+let pendingDeleteId = null;
+
+/* ---------- login ---------- */
+function tryLogin(){
+  const val = el('adminPw').value;
+  if(val === ADMIN_PASSWORD){
+    sessionStorage.setItem('osis_admin_ok','1');
+    el('loginGate').style.display='none';
+    el('dashboard').classList.add('show');
+    loadData();
+  } else {
+    el('loginError').textContent = 'Kata sandi salah. Coba lagi.';
+  }
+}
+el('btnLogin').addEventListener('click', tryLogin);
+el('adminPw').addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+
+el('btnLogout').addEventListener('click', ()=>{
+  sessionStorage.removeItem('osis_admin_ok');
+  location.reload();
+});
+
+if(sessionStorage.getItem('osis_admin_ok') === '1'){
+  el('loginGate').style.display='none';
+  el('dashboard').classList.add('show');
+  loadData();
+}
+
+/* ---------- load list from Apps Script ---------- */
+async function loadData(){
+  el('countText').textContent = 'Memuat data...';
+  el('listContainer').innerHTML = '';
+  if(SCRIPT_URL.includes('GANTI_DENGAN_URL')){
+    el('countText').textContent = 'Belum terhubung ke spreadsheet.';
+    el('listContainer').innerHTML = '<div class="empty-state">Panel ini belum terhubung ke Google Apps Script. Lihat README.md untuk cara memasang URL.</div>';
+    return;
+  }
+  try{
+    const res = await fetch(SCRIPT_URL + '?action=list');
+    const data = await res.json();
+    allData = data.items || [];
+    renderList(allData);
+  }catch(err){
+    el('countText').textContent = 'Gagal memuat data.';
+    el('listContainer').innerHTML = '<div class="empty-state">Tidak dapat terhubung ke server. Periksa koneksi atau URL Apps Script.</div>';
+  }
+}
+el('btnRefresh').addEventListener('click', loadData);
+
+function renderList(items){
+  el('countText').textContent = items.length + ' calon terdaftar';
+  if(items.length === 0){
+    el('listContainer').innerHTML = '<div class="empty-state">Belum ada data pendaftaran.</div>';
+    return;
+  }
+  el('listContainer').innerHTML = items.map(item => `
+    <div class="list-item ${item.id===activeId?'active':''}" data-id="${item.id}">
+      <div class="avatar">${item.fotoUrl ? `<img src="${item.fotoUrl}" alt="">` : ''}</div>
+      <div>
+        <div class="li-name">${escapeHtml(item.nama)}</div>
+        <div class="li-role">${escapeHtml(item.jabatan||'')}</div>
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.list-item').forEach(node=>{
+    node.addEventListener('click', ()=>{
+      activeId = node.dataset.id;
+      renderList(currentFiltered());
+      showDetail(activeId);
+    });
+  });
+}
+
+el('searchBox').addEventListener('input', ()=>{
+  renderList(currentFiltered());
+});
+function currentFiltered(){
+  const q = el('searchBox').value.trim().toLowerCase();
+  if(!q) return allData;
+  return allData.filter(i => (i.nama||'').toLowerCase().includes(q));
+}
+
+function escapeHtml(str){
+  return String(str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* ---------- detail view ---------- */
+function showDetail(id){
+  const item = allData.find(i => String(i.id) === String(id));
+  if(!item) return;
+  const waText = encodeURIComponent(`Halo panitia OSIS, saya ingin melaporkan bahwa data pendaftaran atas nama "${item.nama}" (Kelas ${item.kelas}) terindikasi PALSU / tidak sesuai. Mohon ditindaklanjuti.`);
+  const waLink = `https://wa.me/${REPORT_WA_NUMBER}?text=${waText}`;
+
+  el('detailPanel').innerHTML = `
+    <div class="dossier">
+      <div class="dossier-head">
+        <div class="dossier-photo">${item.fotoUrl ? `<img src="${item.fotoUrl}" alt="Pas foto">` : ''}</div>
+        <div class="dossier-id">
+          <div class="eyebrow">Calon Pengurus OSIS</div>
+          <h2>${escapeHtml(item.nama)}</h2>
+          <span class="role-pill">${escapeHtml(item.jabatan||'-')}</span>
+          <div class="dossier-actions">
+            <a class="btn-action report" href="${waLink}" target="_blank" rel="noopener">Lapor Data Palsu</a>
+            <button class="btn-action delete" id="btnDelete">Hapus Data</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-banner" id="detailStatus"></div>
+
+      <div class="data-grid">
+        <div class="data-item"><div class="dl">Tempat, Tanggal Lahir</div><div class="dv">${escapeHtml(item.tempatLahir)}, ${escapeHtml(item.tanggalLahir)}</div></div>
+        <div class="data-item"><div class="dl">Kelas</div><div class="dv">${escapeHtml(item.kelas)}</div></div>
+        <div class="data-item"><div class="dl">Agama</div><div class="dv">${escapeHtml(item.agama)}</div></div>
+        <div class="data-item"><div class="dl">No. HP</div><div class="dv">${escapeHtml(item.noHp)}</div></div>
+        <div class="data-item"><div class="dl">Email</div><div class="dv">${escapeHtml(item.email)}</div></div>
+        <div class="data-item"><div class="dl">Waktu Daftar</div><div class="dv">${escapeHtml(item.timestamp)}</div></div>
+      </div>
+
+      ${item.pengalaman ? `<div class="prose-block"><div class="dl">Pengalaman Organisasi</div><div class="dv">${escapeHtml(item.pengalaman)}</div></div>` : ''}
+      <div class="prose-block"><div class="dl">Visi</div><div class="dv">${escapeHtml(item.visi)}</div></div>
+      <div class="prose-block"><div class="dl">Misi</div><div class="dv">${escapeHtml(item.misi)}</div></div>
+      <div class="prose-block"><div class="dl">Alasan Masuk OSIS</div><div class="dv">${escapeHtml(item.alasan)}</div></div>
+      <div class="prose-block"><div class="dl">Tujuan Masuk OSIS</div><div class="dv">${escapeHtml(item.tujuan)}</div></div>
+
+      <div class="ttd-block">
+        <div class="dl" style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--maroon);font-weight:700;margin-bottom:8px;">Tanda Tangan</div>
+        ${item.ttdUrl ? `<img src="${item.ttdUrl}" alt="Tanda tangan">` : '<div class="empty-state">Tidak ada berkas.</div>'}
+      </div>
+    </div>
+  `;
+
+  el('btnDelete').addEventListener('click', ()=>{
+    pendingDeleteId = item.id;
+    el('confirmOverlay').classList.add('show');
+  });
+}
+
+/* ---------- delete flow ---------- */
+el('btnCancelDelete').addEventListener('click', ()=>{
+  pendingDeleteId = null;
+  el('confirmOverlay').classList.remove('show');
+});
+el('btnConfirmDelete').addEventListener('click', async ()=>{
+  el('confirmOverlay').classList.remove('show');
+  if(!pendingDeleteId) return;
+  const banner = el('detailStatus');
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action:'delete', id: pendingDeleteId, password: ADMIN_PASSWORD})
+    });
+    const data = await res.json();
+    if(data.status === 'success'){
+      allData = allData.filter(i => String(i.id) !== String(pendingDeleteId));
+      activeId = null;
+      renderList(currentFiltered());
+      el('detailPanel').innerHTML = '<div class="detail-placeholder"><div class="big">Data telah dihapus</div><div>Pilih calon lain di daftar untuk melihat detail.</div></div>';
+    } else {
+      if(banner){ banner.className='status-banner show err'; banner.textContent = 'Gagal menghapus: ' + (data.message||'terjadi kesalahan.'); }
+    }
+  }catch(err){
+    if(banner){ banner.className='status-banner show err'; banner.textContent = 'Gagal terhubung ke server saat menghapus data.'; }
+  }
+});
+</script>
+</body>
+</html>
