@@ -5,4 +5,4 @@
    URL ini dipakai bersama oleh SEMUA formulir jabatan
    maupun halaman verifikasi/admin.
    ========================================================= */
-window.GAS_URL = "PASTE_URL_WEB_APP_ANDA_DI_SINI";
+window.GAS_URL = "https://script.google.com/macros/s/AKfycbzKRQFCsdZ8D8NJUECYX4QIDsp09UscEXTUV8K19bDTYpV-_8Q_rqubDpZPmLPlLBDz/exec";
