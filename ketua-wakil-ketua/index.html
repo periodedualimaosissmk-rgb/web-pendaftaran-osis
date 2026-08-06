@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar Ketua &amp; Wakil Ketua OSIS — Pendaftaran OSIS SMKS Tunas Harapan Pasarkemis</title>
+<link rel="icon" href="../aset/logo.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <div class="pita" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="wrap brand-row">
+      <a href="../index.html" class="brand">
+        <img src="../aset/logo.png" alt="Logo OSIS">
+        Pendaftaran OSIS
+      </a>
+      <span class="tanggal-badge">SMKS TUNAS HARAPAN PASARKEMIS</span>
+    </div>
+  </header>
+
+  <div class="form-page">
+    <a href="../index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      Kembali ke semua jabatan
+    </a>
+
+    <div class="form-card">
+      <div class="kop">
+        <svg class="icon-besar" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="14" cy="14" r="5"/><circle cx="27" cy="14" r="5"/>
+          <path d="M6 33c0-7 4-11 8-11s8 4 8 11"/><path d="M20 33c0-7 4-11 8-11s8 4 8 11"/>
+        </svg>
+        <div class="eyebrow">Formulir Pendaftaran</div>
+        <h1>Ketua &amp; Wakil Ketua OSIS</h1>
+        <div class="meta">
+          <span>Pasangan Calon</span>
+          <span>Tiket #KW-xxxx</span>
+        </div>
+        <p class="cara-main">Satu formulir untuk satu pasangan calon. Isi data Ketua OSIS dan Wakil Ketua OSIS sesuai petunjuk di setiap bagian, lalu isi Visi &amp; Misi bersama di bagian akhir.</p>
+      </div>
+
+      <div class="hint-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+        <span>Isi data secara berurutan: <strong>1. Ketua OSIS</strong> terlebih dahulu, lalu <strong>2. Wakil Ketua OSIS</strong>. Setiap calon mengisi biodata, alasan, tujuan, pas foto, dan tanda tangan masing-masing.</span>
+      </div>
+
+      <form class="pendaftaran" id="form-pendaftaran">
+        <div id="peran-container"></div>
+
+        <div class="field" id="visi-bersama-field" style="display:none">
+          <label for="visi-misi-bersama">Visi &amp; Misi Pasangan Ketua &amp; Wakil Ketua OSIS</label>
+          <textarea id="visi-misi-bersama" placeholder="Tuliskan visi dan misi kalian berdua sebagai satu pasangan calon"></textarea>
+        </div>
+
+        <div class="form-msg" id="form-msg"></div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Daftar Sekarang</button>
+      </form>
+
+      <div class="sukses" id="sukses">
+        <div class="stempel">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2>Pendaftaran Berhasil!</h2>
+        <p>Data pasangan calon Ketua &amp; Wakil Ketua OSIS kalian sudah tercatat. Terima kasih sudah mendaftar!</p>
+        <span class="kode-tiket">Nomor tiket: <strong id="kode-tiket"></strong></span>
+        <br>
+        <a href="../index.html" class="kembali">← Daftar jabatan lain</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap">Panitia Pemilihan Pengurus OSIS SMKS Tunas Harapan Pasarkemis · Data pendaftar tersimpan otomatis ke Spreadsheet panitia</div>
+  </footer>
+
+  <script src="../config.js"></script>
+  <script>
+    window.JABATAN = {
+      namaSheet: "KETUA & WAKIL KETUA OSIS",
+      kodePrefix: "KW",
+      visiMisiBersama: true,
+      roles: [
+        { peran: "Ketua OSIS", labelAlasan: "Alasan Menjadi Ketua OSIS", labelTujuan: "Tujuan Menjadi Ketua OSIS" },
+        { peran: "Wakil Ketua OSIS", labelAlasan: "Alasan Menjadi Wakil Ketua OSIS", labelTujuan: "Tujuan Menjadi Wakil Ketua OSIS" }
+      ]
+    };
+  </script>
+  <script src="../script.js"></script>
+</body>
+</html>
