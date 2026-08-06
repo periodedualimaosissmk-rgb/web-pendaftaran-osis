@@ -293,12 +293,15 @@ img, svg{ display:block; max-width:100%; }
 }
 .tiket .info .daftar svg{ width: 14px; height: 14px; }
 
-.tiket-featured{
-  display:flex;
+/* Tambahkan position: relative pada tiket-featured */
+.tiket-featured {
+  display: flex;
+  position: relative; 
   border-width: 2.5px;
   margin-bottom: 4px;
   box-shadow: 0 12px 0 -4px var(--garis), 0 20px 30px -16px rgba(12,20,40,0.4);
 }
+
 .tiket-featured .stub-emas{
   flex: 0 0 158px;
   background: linear-gradient(155deg, var(--emas), var(--emas-tua));
@@ -308,16 +311,19 @@ img, svg{ display:block; max-width:100%; }
 .tiket-featured .info-featured{ padding: 20px 26px; justify-content:center; gap: 8px; }
 .tiket-featured .info-featured h3{ font-size: 1.35rem; }
 .tiket-featured .info-featured p{ font-size: .92rem; max-width: 60ch; }
-.pita-solo{
+
+/* Sesuaikan posisi top dan left, serta pastikan border-radius melengkung di kanan bawah */
+.pita-solo {
   position: absolute;
-  top: -3px; left: 0px;
+  top: -2.5px; 
+  left: -2.5px; 
   background: var(--navy);
   color: var(--emas);
   font-family: var(--font-mono);
   font-size: .7rem;
   font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 0 0 999px 0;
+  padding: 5px 20px;
+  border-radius: 0 20px 0 0; 
   border: 2px solid var(--navy);
   z-index: 2;
 }
